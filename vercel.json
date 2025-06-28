@@ -1,9 +1,4 @@
 {
-  "buildCommand": "npm run build:static",
-  "outputDirectory": "dist",
-  "devCommand": "npm run dev:static",
-  "installCommand": "npm install",
-  "framework": null,
   "rewrites": [
     {
       "source": "/(.*)",

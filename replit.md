@@ -106,6 +106,11 @@ Changelog:
   - Implemented local storage for form data persistence
   - Created complete deployment package with Vercel configuration
   - Maintained all form functionality and validation
+- June 28, 2025. Cleaned up project structure:
+  - Removed server folder and all backend files
+  - Consolidated to single vite.config.ts for static builds
+  - Created final deployment package (insurance-form-final.tar.gz)
+  - Simplified dependencies to frontend-only packages
 ```
 
 ## User Preferences
