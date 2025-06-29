@@ -25,7 +25,7 @@ type LoginForm = z.infer<typeof loginSchema>;
 export default function Login() {
   const [, setLocation] = useLocation();
   const [error, setError] = useState<string>("");
-  const [captcha, setCaptcha] = useState<{ question: string; answer: number }>({ question: "", answer: 0 });
+  const [captcha, setCaptcha] = useState<{ question: string; answer: string }>({ question: "", answer: "" });
   const { toast } = useToast();
 
   const form = useForm<LoginForm>({
@@ -168,7 +168,7 @@ export default function Login() {
                       <FormItem>
                         <FormControl>
                           <Input 
-                            type="number" 
+                            type="text" 
                             placeholder="Enter the answer" 
                             {...field} 
                             className="w-full"
