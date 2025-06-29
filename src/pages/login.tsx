@@ -189,21 +189,6 @@ export default function Login() {
                 </Button>
               </form>
             </Form>
-
-            <div className="mt-6 pt-6 border-t border-gray-200">
-              <p className="text-sm text-gray-600 mb-3 font-medium">Demo Users:</p>
-              <div className="space-y-2 text-xs">
-                {DUMMY_USERS.map((user, index) => (
-                  <div key={index} className="p-2 bg-gray-50 rounded space-y-1">
-                    <div className="flex justify-between">
-                      <span className="font-mono font-medium">{user.username}</span>
-                      <span className="text-gray-500">{user.email}</span>
-                    </div>
-                    <div className="text-blue-600 font-mono">Password: {user.password}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
           </CardContent>
         </Card>
       </div>
