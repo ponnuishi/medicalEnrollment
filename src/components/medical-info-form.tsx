@@ -464,7 +464,7 @@ export default function MedicalInfoForm({ data, onUpdate, onNext, onPrev }: Medi
                             <SelectValue placeholder="Select relationship" />
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent>
+                        <SelectContent className="bg-white">
                           <SelectItem value="spouse">Spouse</SelectItem>
                           <SelectItem value="parent">Parent</SelectItem>
                           <SelectItem value="child">Child</SelectItem>

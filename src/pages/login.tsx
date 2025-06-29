@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { AuthService, DUMMY_USERS } from "@/lib/auth";
+import { AuthService } from "@/lib/auth";
 import { CaptchaService } from "@/lib/captcha";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -87,7 +87,7 @@ export default function Login() {
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 {error && (
                   <Alert variant="destructive">
-                    <AlertDescription>{error}</AlertDescription>
+                    <AlertDescription className="bg-red-700">{error}</AlertDescription>
                   </Alert>
                 )}
 
@@ -182,7 +182,7 @@ export default function Login() {
 
                 <Button 
                   type="submit" 
-                  className="w-full"
+                  className="w-full border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                   disabled={form.formState.isSubmitting}
                 >
                   {form.formState.isSubmitting ? "Signing in..." : "Sign In"}

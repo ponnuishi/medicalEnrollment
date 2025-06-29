@@ -143,7 +143,7 @@ export default function PersonalInfoForm({ data, onUpdate, onNext }: PersonalInf
                           <SelectValue placeholder="Select gender" />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent>
+                      <SelectContent className="bg-white">
                         <SelectItem value="male">Male</SelectItem>
                         <SelectItem value="female">Female</SelectItem>
                         <SelectItem value="other">Other</SelectItem>
@@ -263,7 +263,7 @@ export default function PersonalInfoForm({ data, onUpdate, onNext }: PersonalInf
                               <SelectValue placeholder="Select state" />
                             </SelectTrigger>
                           </FormControl>
-                          <SelectContent>
+                          <SelectContent className="bg-white">
                             {states.map((state) => (
                               <SelectItem key={state.value} value={state.value}>
                                 {state.label}
