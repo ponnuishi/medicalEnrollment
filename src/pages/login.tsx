@@ -1,19 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { AuthService, DUMMY_USERS } from "@/lib/auth";
+import { CaptchaService } from "@/lib/captcha";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
+import { RefreshCw } from "lucide-react";
 
 const loginSchema = z.object({
   username: z.string().min(1, "Username is required"),
   email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(1, "Password is required"),
+  captcha: z.string().min(1, "Please solve the captcha"),
 });
 
 type LoginForm = z.infer<typeof loginSchema>;
@@ -21,6 +25,7 @@ type LoginForm = z.infer<typeof loginSchema>;
 export default function Login() {
   const [, setLocation] = useLocation();
   const [error, setError] = useState<string>("");
+  const [captcha, setCaptcha] = useState<{ question: string; answer: number }>({ question: "", answer: 0 });
   const { toast } = useToast();
 
   const form = useForm<LoginForm>({
@@ -28,11 +33,30 @@ export default function Login() {
     defaultValues: {
       username: "",
       email: "",
+      password: "",
+      captcha: "",
     },
   });
 
+  useEffect(() => {
+    generateNewCaptcha();
+  }, []);
+
+  const generateNewCaptcha = () => {
+    const newCaptcha = CaptchaService.generateCaptcha();
+    setCaptcha(newCaptcha);
+    form.setValue("captcha", "");
+  };
+
   const onSubmit = (data: LoginForm) => {
-    const success = AuthService.login(data.username, data.email);
+    // Verify captcha first
+    if (!CaptchaService.verifyCaptcha(data.captcha, captcha.answer)) {
+      setError("Incorrect captcha answer. Please try again.");
+      generateNewCaptcha();
+      return;
+    }
+
+    const success = AuthService.login(data.username, data.email, data.password);
     
     if (success) {
       toast({
@@ -41,7 +65,8 @@ export default function Login() {
       });
       setLocation("/insurance-form");
     } else {
-      setError("Invalid username or email. Please check your credentials.");
+      setError("Invalid credentials. Please check your username, email, and password.");
+      generateNewCaptcha();
     }
   };
 
@@ -103,6 +128,58 @@ export default function Login() {
                   )}
                 />
 
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input 
+                          type="password" 
+                          placeholder="Enter your password" 
+                          {...field} 
+                          className="w-full"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="space-y-2">
+                  <FormLabel>Security Check</FormLabel>
+                  <div className="flex items-center space-x-2 p-3 bg-gray-50 rounded-lg">
+                    <span className="font-mono text-lg">{captcha.question}</span>
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      size="sm"
+                      onClick={generateNewCaptcha}
+                      className="ml-auto"
+                    >
+                      <RefreshCw className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <FormField
+                    control={form.control}
+                    name="captcha"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input 
+                            type="number" 
+                            placeholder="Enter the answer" 
+                            {...field} 
+                            className="w-full"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
                 <Button 
                   type="submit" 
                   className="w-full"
@@ -117,9 +194,12 @@ export default function Login() {
               <p className="text-sm text-gray-600 mb-3 font-medium">Demo Users:</p>
               <div className="space-y-2 text-xs">
                 {DUMMY_USERS.map((user, index) => (
-                  <div key={index} className="flex justify-between p-2 bg-gray-50 rounded">
-                    <span className="font-mono">{user.username}</span>
-                    <span className="text-gray-500">{user.email}</span>
+                  <div key={index} className="p-2 bg-gray-50 rounded space-y-1">
+                    <div className="flex justify-between">
+                      <span className="font-mono font-medium">{user.username}</span>
+                      <span className="text-gray-500">{user.email}</span>
+                    </div>
+                    <div className="text-blue-600 font-mono">Password: {user.password}</div>
                   </div>
                 ))}
               </div>
